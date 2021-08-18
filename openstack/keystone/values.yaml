@@ -422,6 +422,12 @@ alerts:
   # Name of the Prometheus to which metrics should be exported
   prometheus: openstack
 
+# sapcc/openstack-rate-limit-middleware
+sapcc_rate_limit:
+  enabled: true
+  persistence:
+    enabled: false
+    
 # Deploy SRE monitoring & alerting
 sre:
   enabled: true
