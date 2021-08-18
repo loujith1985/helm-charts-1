@@ -5,8 +5,8 @@ whitelist:
 
 # Override default ratelimit response.
 ratelimit_response:
-  status: 498 Rate Limited
-  status_code: 498
+  status: 429 Rate Limited
+  status_code: 429
   body: "Rate Limit Exceeded"
 
 # Override default blacklist response.
