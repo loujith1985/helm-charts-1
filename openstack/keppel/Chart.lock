@@ -4,21 +4,21 @@ dependencies:
   version: 1.1.1
 - name: postgresql-ng
   repository: oci://keppel.eu-de-1.cloud.sap/ccloud-helm
-  version: 2.3.58
+  version: 2.4.10
 - name: pgbackup
   repository: oci://keppel.eu-de-1.cloud.sap/ccloud-helm
-  version: 1.5.4
+  version: 1.5.29
 - name: pgmetrics
   repository: oci://keppel.eu-de-1.cloud.sap/ccloud-helm
-  version: 2.0.73
+  version: 2.1.9
 - name: redis
   repository: oci://keppel.eu-de-1.cloud.sap/ccloud-helm
-  version: 2.4.66
+  version: 2.5.20
 - name: owner-info
   repository: oci://keppel.eu-de-1.cloud.sap/ccloud-helm
   version: 1.0.0
 - name: shared-app-images-tags
   repository: oci://keppel.eu-de-1.cloud.sap/ccloud-helm
-  version: 1.1.585
-digest: sha256:c409bdde4248bc063482062e6332fde5b3bf77a9dc934a7e30df8bf0ffa75dc7
-generated: "2026-06-22T04:33:45.187801854Z"
+  version: 1.1.681
+digest: sha256:580043ab462e0b070ce6e83fe83db19d57276fd4f8ff47f3d8fd4ea3df8b3841
+generated: "2026-09-09T12:48:56.12312949Z"

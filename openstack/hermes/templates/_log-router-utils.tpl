@@ -6,6 +6,22 @@
   {{- end -}}
 {{- end -}}
 
+{{- define "log_router_rabbitmq_urls" -}}
+{{- $replicas := int (required ".Values.rabbitmq_notifications.replicas is missing" $.Values.rabbitmq_notifications.replicas) -}}
+{{- if le $replicas 0 -}}
+  {{- fail ".Values.rabbitmq_notifications.replicas must be greater than zero when logRouter.enabled=true" -}}
+{{- end -}}
+{{- $service := printf "%s-rabbitmq-notifications" $.Release.Name -}}
+{{- $domain := printf "%s.svc.%s" $.Release.Namespace (required ".Values.global.clusterDNSSearchDomain is missing" $.Values.global.clusterDNSSearchDomain) -}}
+{{- $port := required ".Values.logRouter.rabbitmq.port is missing" $.Values.logRouter.rabbitmq.port -}}
+{{- $urls := list -}}
+{{- range $i := until $replicas -}}
+  {{- $host := printf "%s-%d.%s.%s" $service $i $service $domain -}}
+  {{- $urls = append $urls (printf "amqp://$(RABBITMQ_USER):$(RABBITMQ_PASSWORD)@%s:%v/" $host $port) -}}
+{{- end -}}
+{{- join "," $urls -}}
+{{- end -}}
+
 {{- define "log_router_common_envvars" }}
 - name: LOG_ROUTER_LISTEN_ADDRESS
   valueFrom:
@@ -82,16 +98,49 @@
     configMapKeyRef:
       name: log-router-etc
       key: LOG_ROUTER_S3_PREFIX
-- name: AWS_ACCESS_KEY_ID
+- name: LOG_ROUTER_SWIFT_ENABLED
+  valueFrom:
+    configMapKeyRef:
+      name: log-router-etc
+      key: LOG_ROUTER_SWIFT_ENABLED
+- name: LOG_ROUTER_SWIFT_SERVICE_TYPE
+  valueFrom:
+    configMapKeyRef:
+      name: log-router-etc
+      key: LOG_ROUTER_SWIFT_SERVICE_TYPE
+{{- if .Values.logRouter.swift.enabled }}
+# Keystone credentials for Swift/Ceph RGW authentication (hermes service account).
+# Authenticates as ccadmin/cloud_admin — cloud_objectstore_admin role grants cross-account
+# Ceph RGW access to all tenant buckets. Admin compliance bucket lives in ccadmin/master;
+# LOG_ROUTER_SWIFT_ADMIN_ACCOUNT switches the admin client to that account at write time.
+# Mirrors the keppel/deployment-health-monitor OS_* env block (alphabetized,
+# explicit auth-version pins for gophercloud).
+- name: LOG_ROUTER_SWIFT_ADMIN_ACCOUNT
+  value: 'AUTH_{{ .Values.logRouter.swift.adminProjectID | required "logRouter.swift.adminProjectID must be set (ccadmin/master project UUID)" }}'
+- name: OS_AUTH_URL
+  value: "http://keystone.{{ $.Values.global.keystoneNamespace }}.svc.{{ $.Values.global.clusterDNSSearchDomain }}:5000/v3"
+- name: OS_AUTH_VERSION
+  value: '3'
+- name: OS_IDENTITY_API_VERSION
+  value: '3'
+- name: OS_INTERFACE
+  value: 'public'
+- name: OS_PASSWORD
   valueFrom:
     secretKeyRef:
       name: log-router-secret
-      key: AWS_ACCESS_KEY_ID
-- name: AWS_SECRET_ACCESS_KEY
-  valueFrom:
-    secretKeyRef:
-      name: log-router-secret
-      key: AWS_SECRET_ACCESS_KEY
+      key: OS_PASSWORD
+- name: OS_PROJECT_DOMAIN_NAME
+  value: 'ccadmin'
+- name: OS_PROJECT_NAME
+  value: 'cloud_admin'
+- name: OS_REGION_NAME
+  value: {{ required ".Values.global.region must be set when logRouter.swift.enabled=true (used for Swift endpoint catalog lookup)" $.Values.global.region | quote }}
+- name: OS_USER_DOMAIN_NAME
+  value: 'Default'
+- name: OS_USERNAME
+  value: 'hermes'
+{{- end }}
 - name: RABBITMQ_USER
   valueFrom:
     secretKeyRef:
@@ -102,13 +151,18 @@
     secretKeyRef:
       name: log-router-secret
       key: RABBITMQ_PASSWORD
-- name: RABBITMQ_URL
-  value: "amqp://$(RABBITMQ_USER):$(RABBITMQ_PASSWORD)@{{ $.Release.Name }}-rabbitmq-notifications.{{ $.Release.Namespace }}.svc:{{ $.Values.logRouter.rabbitmq.port }}/"
+- name: RABBITMQ_URLS
+  value: {{ include "log_router_rabbitmq_urls" . | quote }}
+# Read-only connection to the hermes postgres for dataplane_config lookups.
+# The log_router login user is a member of the log_router_reader NOLOGIN role
+# (created by hermez's migration 001), which holds the SELECT grant on the
+# dataplane_config table. Log-router fails closed on connection errors —
+# all events still reach the admin tier (ccadmin/master) regardless.
 - name: LOG_ROUTER_DB_PASSWORD
   valueFrom:
     secretKeyRef:
-      name: '{{ $.Release.Name }}-pguser-{{$.Values.logRouter.db.user}}'
+      name: '{{ $.Release.Name }}-pguser-{{ $.Values.logRouter.hermesDb.user }}'
       key: postgres-password
 - name: LOG_ROUTER_DB_URL
-  value: "postgres://{{$.Values.logRouter.db.user}}:$(LOG_ROUTER_DB_PASSWORD)@{{ $.Release.Name }}-postgresql.{{ $.Release.Namespace }}.svc:5432/log-router?sslmode=disable"
+  value: "postgres://{{ $.Values.logRouter.hermesDb.user }}:$(LOG_ROUTER_DB_PASSWORD)@{{ $.Release.Name }}-postgresql.{{ $.Release.Namespace }}.svc:5432/hermes?sslmode=disable"
 {{- end -}}

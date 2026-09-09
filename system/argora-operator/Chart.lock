@@ -4,6 +4,6 @@ dependencies:
   version: 1.0.0
 - name: argora
   repository: oci://ghcr.io/sapcc/charts
-  version: 0.0.1-20260616085052-216b1d2
-digest: sha256:91aac2e6a1e6d99e8e2a7723b782932959901a89d7948bd3950546ec34c9977f
-generated: "2026-06-16T11:02:11.24801+02:00"
+  version: 0.0.1-20260909122135-d409d47
+digest: sha256:9b4ae54c371516bd87b7f405d950fcc011cd64d87986b0fa78f91abd726d5098
+generated: "2026-09-09T15:15:49.598051+02:00"

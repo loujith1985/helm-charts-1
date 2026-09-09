@@ -4,12 +4,12 @@ dependencies:
   version: 1.1.1
 - name: rabbitmq
   repository: oci://keppel.eu-de-1.cloud.sap/ccloud-helm
-  version: 0.25.2
+  version: 0.25.6
 - name: owner-info
   repository: oci://keppel.eu-de-1.cloud.sap/ccloud-helm
   version: 0.2.0
 - name: postgresql-ng
   repository: oci://keppel.eu-de-1.cloud.sap/ccloud-helm
-  version: 2.3.57
-digest: sha256:43696938117a9cc9567fddb84c66cb89122eaf073ee8ab5f5e3dde057257c62d
-generated: "2026-06-17T10:25:30.371677+02:00"
+  version: 2.3.64
+digest: sha256:48ab20d6ee0a0ef8ea4a447481579cb4c40e0eac998ffa751fdbdaa71d384b59
+generated: "2026-07-13T14:21:23.691628+02:00"

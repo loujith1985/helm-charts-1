@@ -54,7 +54,9 @@ known_support_groups:
   - observability
   - src
   - storage
+  - trust
   - workload-management
+  - devsupport
 
 ################################################################################
 # documentation for this section: <https://github.com/open-policy-agent/gatekeeper/tree/master/charts/gatekeeper>
@@ -103,7 +105,7 @@ gatekeeper-upstream:
     resources:
       limits:
         cpu: 2
-        memory: 1024Mi
+        memory: 1.5Gi
       requests:
         cpu: 500m
         memory: 256Mi

@@ -1,7 +1,7 @@
 dependencies:
 - name: gatekeeper
   repository: file://vendor/gatekeeper-upstream
-  version: 3.22.0
+  version: 3.23.0
 - name: linkerd-support
   repository: oci://keppel.eu-de-1.cloud.sap/ccloud-helm
   version: 1.1.1
@@ -10,6 +10,9 @@ dependencies:
   version: 1.0.0
 - name: shared-app-images-tags
   repository: oci://keppel.eu-de-1.cloud.sap/ccloud-helm
-  version: 1.1.585
-digest: sha256:5d3ad29252ef2f0a82b2924e94bd4722106ad9f8aabe466b4269c17350145af1
-generated: "2026-06-22T04:31:31.63177694Z"
+  version: 1.1.681
+- name: gatekeeper-policies
+  repository: oci://keppel.eu-de-1.cloud.sap/ccloud-helm
+  version: 1.0.0
+digest: sha256:a0f1d20d0bf8956426b8283a0a7c56f9f7bc62d05d773c6af169b4677398e699
+generated: "2026-09-07T04:59:07.082697621Z"

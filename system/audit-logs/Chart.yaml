@@ -6,7 +6,7 @@ dependencies:
   - name: fluent-audit-container
     alias: fluent_audit_container
     repository: file://vendor/fluent-audit-container
-    version: 2.1.11
+    version: 2.1.12
     condition: fluent_audit_container.enabled
 
   - name: fluent-audit-systemd
@@ -18,7 +18,7 @@ dependencies:
   - name: logstash-audit-external
     alias: logstash_audit_external
     repository: file://vendor/logstash-audit-external
-    version: 2.1.25
+    version: 2.1.27
     condition: logstash_audit_external.enabled
 
   - name: auditbeat
