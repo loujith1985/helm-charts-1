@@ -253,5 +253,5 @@ groups:
         playbook: 'docs/network/playbooks/router#NetworkAsrNatRGSyncSendFailure'
         dashboard: neutron-router
       annotations:
-        summary: "NAT Session delete(sdel) or add(sadd) failure between Neutron Router Cluster `{{ $labels.name }}`"
-        description: "NAT Session sync failure between Neutron Router Cluster `{{ $labels.name }}`"
+        summary: "NAT Sessions delete(sdel) or add(sadd) failure between Neutron Router Cluster `{{ $labels.name }}`"
+        description: "NAT Sessions sync failure between Neutron Router Cluster `{{ $labels.name }}`"
